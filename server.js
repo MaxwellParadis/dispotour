@@ -6,8 +6,9 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended:true}));
 server.use(express.json());
 
-server.use(express.static('static/app'));
+server.use(express.static('disposition/public'));
 server.use(express.static('static/photos'));
+server.use(express.static('static/custom'));
 
 require('dotenv').config();
 const PORT = process.env.PORT;

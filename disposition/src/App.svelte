@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { createScene } from "./scene";
 
-  const items = [{ name: "Test", img: "./img/pdemo2.jpg" }, { name: "Test", img: "./img/pdemo2.jpg" }, { name: "Test", img: "./img/pdemo2.jpg" }, { name: "Test", img: "./img/pdemo2.jpg" }];
+  const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
 
   function handleTour(tour) {
     t.currentTarget.nextElementSibling.classList.toggle("close");

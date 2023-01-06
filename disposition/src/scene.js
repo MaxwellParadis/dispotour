@@ -17,12 +17,12 @@ export const createScene = (canvas, project) => {
 
   var mat = new BABYLON.StandardMaterial("", scene);
   mat.disableLighting = true;
-  mat.emissiveTexture = new BABYLON.Texture("./img/pdemo.jpg", scene, undefined, false);
+  mat.emissiveTexture = new BABYLON.Texture("pdemo.jpg", scene, undefined, false);
   mat.sideOrientation = 0
 
   var mat2 = new BABYLON.StandardMaterial("", scene);
   mat2.disableLighting = true;
-  mat2.emissiveTexture = new BABYLON.Texture("./img/pdemo2.jpg", scene, undefined, false);
+  mat2.emissiveTexture = new BABYLON.Texture("pdemo2.jpg", scene, undefined, false);
   mat2.sideOrientation = 0
   
   sphere.material = mat
@@ -54,7 +54,7 @@ export const createScene = (canvas, project) => {
   scene.onPointerDown = function (evt) {
     var pickResult = scene.pickSprite(this.pointerX, this.pointerY);
     if (pickResult.hit) {
-      mat.emissiveTexture = new BABYLON.Texture("./img/"+pickResult.pickedSprite.name, scene, undefined, false);
+      mat.emissiveTexture = new BABYLON.Texture(pickResult.pickedSprite.name, scene, undefined, false);
       /*
       dome.dispose;
       dome = new BABYLON.PhotoDome(
