@@ -1,0 +1,25 @@
+{
+  "name": "dispotour",
+  "version": "1.0.0",
+  "description": "360 Panoramic Photo App",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxwellParadis/dispotour.git"
+  },
+  "keywords": [
+    "360",
+    "Photo",
+    "Tour"
+  ],
+  "author": "Maxwell Paradis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MaxwellParadis/dispotour/issues"
+  },
+  "homepage": "https://github.com/MaxwellParadis/dispotour#readme"
+}
