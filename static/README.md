@@ -1,0 +1,1 @@
+Inside the Static folder the server is set up to serve from both a 'custom' and 'photos' folders.  You can change these however you would like but make sure to reflect that in the docker compose file.  These want to be accessable outside of the container so that you may add your photos whichever secure method you would choose.
