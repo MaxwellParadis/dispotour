@@ -1,6 +1,7 @@
 # ---> Node
 
 photos/
+*.old
 
 # Logs
 logs
