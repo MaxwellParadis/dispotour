@@ -7,7 +7,7 @@
   const max = 10;
   const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
   var edit = false;
-  const edits = {name:'', file:'', date:'', x:10, y:10, z:0, n:0, tour:''};
+  const edits = {name:'', file:'', date:'', x:10, y:10, z:0, n:0, tour:'', key:''};
 
   function handleTour(tour) {
     tour.currentTarget.nextElementSibling.classList.toggle("close");
@@ -55,11 +55,8 @@
         {/each}
       {/if}
       {#if edit}
-          <div class='edits'>
-            <div class='inputs'>Name
-              <input type=string bind:value={edits.name}>
-            </div>
-            
+        <div class='edit-tab'>
+          <div class='edits'>  
             <div class='inputs'>Tour
               <input type=string bind:value={edits.tour}>
             </div>
@@ -68,16 +65,12 @@
               <input type=string bind:value={edits.img}>
             </div>
             
-            <div class='inputs'>X
-              <input type=number min={min} max={max} bind:value={edits.x}>
-            </div>
-            
-            <div class='inputs'>Y
-              <input type=number min={min} max={max} bind:value={edits.y}>
-            </div>
-            
-            <div class='inputs'>Z
-              <input type=number min={min} max={max} bind:value={edits.z}>
+            <div class='inputs'>Vector
+              <div class='ed-int-ar'>
+                <input class='ed-int' type=number min={min} max={max} bind:value={edits.x}>
+                <input class='ed-int' type=number min={min} max={max} bind:value={edits.y}>
+                <input class='ed-int' type=number min={min} max={max} bind:value={edits.z}>
+              </div>
             </div>
             
             <div class='inputs'>North Rotation
@@ -87,11 +80,17 @@
             <div class='inputs'>Date
               <input type=date bind:value={edits.date}>
             </div>
-            
-            <div class='inputs'>Date
-              <button class="base-tabasdf" on:click={()=>handleUpdate}>Update</button>
+
+            <div class='inputs'>Edit Key
+              <input type=string bind:value={edits.key}>
             </div>
+            
           </div>
+          <div class='ed-butts'>
+            <button class="ed-butt" on:click={()=>handleUpdate}>Update</button>
+            <button class="ed-butt" on:click={()=>handleUpdate}>Get</button>
+          </div>
+        </div>
       {/if}
     </div>
   </div>

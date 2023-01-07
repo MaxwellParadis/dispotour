@@ -4,13 +4,26 @@
 	--font: font-family: Consolas, monaco, monospace;
 }
 
-button{
+button, input{
 	font-family: inherit;
+	font-size: inherit;
 	color: inherit;
+	border: unset;
+	background-color: var(--baseColor);
+	flex-grow: 1;
 }
 
 input{
-	font-family: inherit;
+	width: 10vmax;
+	border: 1px solid black;
+}
+
+input:hover{
+	background-color: rgb(143, 143, 143);
+}
+
+button:hover{
+	border: .2vmin solid white;
 }
 
 html, body {
@@ -19,6 +32,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	font-family: Consolas, monaco, monospace; 
+	font-size: 1vmax;
 }
   
 canvas {
@@ -47,8 +61,8 @@ canvas {
 	color: var(--textColor);
 	text-align: center;
 	width: 30vmax;
-	height: 2vh;
-	transform: translateY(-2vh);
+	height: 2vmax;
+	transform: translateY(-2vmax);
 	background-color:black;
 	margin: 0 auto;
 	border-top-left-radius: 1vh;
@@ -58,30 +72,66 @@ canvas {
 .base-tab{
 	background-color: var(--baseColor);
 	width: 10vmax;
-}
-
-.base-tab:hover{
-	border-right: 2px solid white;
-	border-left: 2px solid white;
+	height: 2vmax;
 }
 
 .base-bar{
 	border-top: 1vh solid black;
-	transform: translateY(-2vh);
+	transform: translateY(-2vmax);
 	display:flex;
 	overflow-x: auto;
+	height: auto;
+}
+
+.edit-tab{
+	display: flex;
+	width: 100%;
+	height: 20vh;
+	flex-direction: column;
 }
 
 .edits{
+	/*overflow-x: scroll;*/
+	width: 100%;
+	height: calc(13vh);
 	display: flex;
+	flex-direction: column;
 	flex-wrap:wrap;
 	align-content: space-evenly;
+	align-items: flex-start;
 }
 
 .inputs{
-	font-size: 1vmax;
-	width: 20vw;
-	padding: 1vmax;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	padding: 1vh;
+	width: 20vmin;
+	height: 2vmax;
+}
+
+.ed-int-ar{
+	width:10vw;
+	display: flex;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.ed-int{
+	width: 2vmax;
+	flex-grow: 1;
+}
+
+.ed-butt{
+	flex-basis: 1;
+	flex-grow: 1;
+}
+
+.ed-butts{
+	display: flex;
+	flex-grow: 1;
+	flex-shrink: 1;
+	justify-content: center;
 }
 
 .tiles{
@@ -120,3 +170,4 @@ canvas {
 	height: 0px;
 	width: 0px;
   }
+
