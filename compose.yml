@@ -1,0 +1,26 @@
+version: "3.9"  
+services:
+  Server:
+    container_name: Landing
+    image: maxwellmichael/disposition:TOUR-Latest
+    working_dir: /app
+    restart: always
+    environment:
+      - PORT=8014
+    ports:
+      - $PORT:$PORT
+  TMysql:
+    container_name: DLS-DB
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_DATABASE=$SQL_DB
+      - MYSQL_ROOT_PASSWORD=$SQL_PW
+      - MYSQL_USER=$SQL_USR
+      - MYSQL_PASSWORD=$SQL_PW
+      - MYSQL_TCP_PORT=$SQL_PORT
+    ports:
+      - $SQL_PORT:$SQL_PORT
+    volumes:
+      - /mnt/Backup/Test/dls/db:/var/lib/mysql
