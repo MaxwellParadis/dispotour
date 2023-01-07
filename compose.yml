@@ -9,6 +9,8 @@ services:
       - PORT=8014
     ports:
       - $PORT:$PORT
+    volumes:
+      - ./photos:/static/photos
   TMysql:
     container_name: DLS-DB
     image: mysql:8.0
@@ -23,4 +25,4 @@ services:
     ports:
       - $SQL_PORT:$SQL_PORT
     volumes:
-      - /mnt/Backup/Test/dls/db:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
