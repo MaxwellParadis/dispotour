@@ -1,13 +1,24 @@
 <script>
   import { onMount } from "svelte";
   import { createScene } from "./scene";
-	
+  import axios from "axios";
+
+	let lon;
+  var date;
 	let now = new Date(), month, day, year;
 	const min = -10;
   const max = 10;
-  const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
   var edit = false;
-  const edits = {name:'', file:'', date:'', x:10, y:10, z:0, n:0, tour:'', key:''};
+  const edits = {name:'image.jpg', tour:'Default', date:'', x:5, y:5, z:0, n:0, key:'APIKEY'};
+
+  function vectorRange(n,r){
+    if(n > r){return r;};
+    if(n < -r){return -r};
+    if(r === 10){return Math.round(n*r)/r}else{
+      return Math.round(n);
+    };
+
+  }
 
   function handleTour(tour) {
     tour.currentTarget.nextElementSibling.classList.toggle("close");
@@ -15,13 +26,19 @@
 
   function handleTab(mode) {
     edit = mode;
+    console.log('test');
   }
 
   function handleUpdate() {
-    console.log(edits);
+    edits.x = vectorRange(edits.x,10); 
+    edits.y = vectorRange(edits.y,10); 
+    edits.z = vectorRange(edits.z,10); 
+    edits.n = vectorRange(edits.n,180); 
+    edits.date =  year+'-'+month+'-'+day;
+    window.console.log(edits.date);
+    axios.post('/api/update', edits );
   }
   
-  let lon;
   onMount(() => {
     createScene(lon);
     month = '' + (now.getMonth() + 1),
@@ -33,7 +50,7 @@
     if (day.length < 2) 
         day = '0' + day;
 
-    edits.date = [year, month, day].join('-');
+    date = [year, month, day].join('-');
   });
 </script>
 
@@ -47,10 +64,10 @@
     </div>
     <div class="base-bar">
       {#if !edit}
-        {#each items as item, i}
+        {#each tours as tour, i}
           <button class="tiles" on:click={handleTour}>
-            {item.name}
-            <img alt={item.name} class=timg src={item.img}/>
+            {tour.name}
+            <img alt={tour.name} class=timg src={tour.img}/>
           </button>
         {/each}
       {/if}
@@ -62,7 +79,7 @@
             </div>
             
             <div class='inputs'>Image File
-              <input type=string bind:value={edits.img}>
+              <input type=string bind:value={edits.name}>
             </div>
             
             <div class='inputs'>Vector
@@ -74,11 +91,11 @@
             </div>
             
             <div class='inputs'>North Rotation
-              <input type=number min={-180} max={180} bind:value={edits.n}>
+              <input type=integer min={-180} max={180} bind:value={edits.n}>
             </div>
             
             <div class='inputs'>Date
-              <input type=date bind:value={edits.date}>
+              <input type=date bind:value={date}>
             </div>
 
             <div class='inputs'>Edit Key
@@ -87,8 +104,8 @@
             
           </div>
           <div class='ed-butts'>
-            <button class="ed-butt" on:click={()=>handleUpdate}>Update</button>
-            <button class="ed-butt" on:click={()=>handleUpdate}>Get</button>
+            <button class="ed-butt" on:click={handleUpdate}>Update</button>
+            <button class="ed-butt" on:click={handleUpdate}>Get</button>
           </div>
         </div>
       {/if}
