@@ -3,7 +3,8 @@
   import { createScene } from "./scene";
 	
 	let now = new Date(), month, day, year;
-	
+	const min = -10;
+  const max = 10;
   const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
   var edit = false;
   const edits = {name:'', file:'', date:'', x:10, y:10, z:0, n:0, tour:''};
@@ -54,16 +55,42 @@
         {/each}
       {/if}
       {#if edit}
-          <div>
-            <input type=string bind:value={edits.name}>
-            <input type=string bind:value={edits.tour}>
-            <input type=string bind:value={edits.img}>
-            <input type=float bind:value={edits.x}>
-            <input type=float bind:value={edits.y}>
-            <input type=float bind:value={edits.z}>
-            <input type=float bind:value={edits.n}>
-            <input type=date bind:value={edits.date}>
-            <button class="base-tabasdf" on:click={()=>handleUpdate}>Update</button>
+          <div class='edits'>
+            <div class='inputs'>Name
+              <input type=string bind:value={edits.name}>
+            </div>
+            
+            <div class='inputs'>Tour
+              <input type=string bind:value={edits.tour}>
+            </div>
+            
+            <div class='inputs'>Image File
+              <input type=string bind:value={edits.img}>
+            </div>
+            
+            <div class='inputs'>X
+              <input type=number min={min} max={max} bind:value={edits.x}>
+            </div>
+            
+            <div class='inputs'>Y
+              <input type=number min={min} max={max} bind:value={edits.y}>
+            </div>
+            
+            <div class='inputs'>Z
+              <input type=number min={min} max={max} bind:value={edits.z}>
+            </div>
+            
+            <div class='inputs'>North Rotation
+              <input type=number min={-180} max={180} bind:value={edits.n}>
+            </div>
+            
+            <div class='inputs'>Date
+              <input type=date bind:value={edits.date}>
+            </div>
+            
+            <div class='inputs'>Date
+              <button class="base-tabasdf" on:click={()=>handleUpdate}>Update</button>
+            </div>
           </div>
       {/if}
     </div>

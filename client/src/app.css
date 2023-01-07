@@ -9,6 +9,10 @@ button{
 	color: inherit;
 }
 
+input{
+	font-family: inherit;
+}
+
 html, body {
 	overflow: hidden;
 	display: block;
@@ -66,6 +70,18 @@ canvas {
 	transform: translateY(-2vh);
 	display:flex;
 	overflow-x: auto;
+}
+
+.edits{
+	display: flex;
+	flex-wrap:wrap;
+	align-content: space-evenly;
+}
+
+.inputs{
+	font-size: 1vmax;
+	width: 20vw;
+	padding: 1vmax;
 }
 
 .tiles{
