@@ -31,17 +31,29 @@ var connection = mysql.createConnection({
 connection.connect(); 
 global.db = connection;
 
-let sql = "CREATE TABLE IF NOT EXISTS photos (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(25), tour VARCHAR(25), date DATE, x DECIMAL(3,1), y DECIMAL(3,1), z DECIMAL(3,1), n INT, PRIMARY KEY (id));";
+let sql = "CREATE TABLE IF NOT EXISTS photos (name VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), date DATE, x DECIMAL(3,1), y DECIMAL(3,1), z DECIMAL(3,1), n INT, UNIQUE (name));";
 db.query(sql, (err, results) => {
     if(err){console.log(err)};
     //console.log(results);
 })
 
-
-
 server.get("/", (req, res) => {
 	res.sendFile('index.html');
 });
+
+server.post("/api/tours", (req, res) => {
+	//const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
+    //let sql = "SELECT DISTINCT on tour * FROM photos;";
+	let sql = "SELECT * FROM photos;";
+    db.query(sql, (err, results) => {
+        if(err){
+			console.log(err);
+			res.send({error: true, message: 'SQL Error', data: results});
+		}else{
+			res.send({error: false, message: 'Success', data: results});
+		}	
+    });
+}); //res.send(items);
 
 server.post("/api/tour", (req, res) => {
 	let sql = "SELECT * FROM photos WHERE tour = '"+req.body.tour+"';";
@@ -53,27 +65,12 @@ server.post("/api/tour", (req, res) => {
 			res.send({error: false, message: 'Success', data: results});
 		}	
     }); 
-	res.send('Test');
-});
-
-server.post("/api/tours", (req, res) => {
-	const items = [{ name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo.jpg" }, { name: "Test", img: "pdemo2.jpg" }, { name: "Test", img: "pdemo2.jpg" }];
-    let sql = "SELECT DISTINCT on tour * FROM photos;";
-    db.query(sql, (err, results) => {
-        if(err){
-			console.log(err);
-			res.send({error: true, message: 'SQL Error', data: results});
-		}else{
-			res.send({error: false, message: 'Success', data: results});
-		}	
-    });
-	res.send(items);
 });
 
 server.post("/api/update", (req, res) => {
 	let d = req.body;
 	if(d.key === KEY){
-		let sql = "REPLACE INTO photos (name, tour, date, x, y, z, n) VALUES('"+d.name+"','"+d.tour+"','"+d.date+"','"+d.x+"','"+d.y+"','"+d.z+"','"+d.n+"');";
+		let sql = "REPLACE INTO photos (name, tour, date, position, x, y, z, n) VALUES('"+d.name+"','"+d.tour+"','"+d.date+"','"+d.position+"','"+d.x+"','"+d.y+"','"+d.z+"','"+d.n+"');";
     	db.query(sql, (err, results) => {
         	if(err){
 				console.log(err);
@@ -89,19 +86,15 @@ server.post("/api/update", (req, res) => {
 
 server.post("/api/get", (req, res) => {
 	let d = req.body;
-	if(d.key === KEY){
-		let sql = "SELECT * FROM photos WHERE name = '"+d.name+"';";
-    	db.query(sql, (err, results) => {
-        	if(err){
-				console.log(err);
-				res.send({error: true, message: 'SQL Error', data: results});
-			}else{
-				res.send({error: false, message: 'Success', data: results});
-			}			
-    	}); 
-	}else{
-		res.send({error: true, message:'Incorrect API Key'});
-	}
+	let sql = "SELECT * FROM photos WHERE name = '"+d.name+"';";
+    db.query(sql, (err, results) => {
+        if(err){
+			console.log(err);
+			res.send({error: true, message: 'SQL Error', data: results});
+		}else{
+			res.send({error: false, message: 'Success', data: results});
+		}			
+    }); 
 });
 
 server.listen(PORT, () => {

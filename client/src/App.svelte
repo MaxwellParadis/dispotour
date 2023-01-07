@@ -5,11 +5,14 @@
 
 	let lon;
   var date;
+  var tours = [];
 	let now = new Date(), month, day, year;
 	const min = -10;
   const max = 10;
   var edit = false;
-  const edits = {name:'image.jpg', tour:'Default', date:'', x:5, y:5, z:0, n:0, key:'APIKEY'};
+  var edits = {name:'image.jpg', tour:'Default', date:'', position:'A', x:5, y:5, z:0, n:0, key:'APIKEY'};
+
+
 
   function vectorRange(n,r){
     if(n > r){return r;};
@@ -17,7 +20,6 @@
     if(r === 10){return Math.round(n*r)/r}else{
       return Math.round(n);
     };
-
   }
 
   function handleTour(tour) {
@@ -26,7 +28,6 @@
 
   function handleTab(mode) {
     edit = mode;
-    console.log('test');
   }
 
   function handleUpdate() {
@@ -35,11 +36,33 @@
     edits.z = vectorRange(edits.z,10); 
     edits.n = vectorRange(edits.n,180); 
     edits.date =  year+'-'+month+'-'+day;
-    window.console.log(edits.date);
     axios.post('/api/update', edits );
+    edits = edits;
+  }
+
+  function getCurrent() {
+    axios.post('/api/get', {name: edits.name}).then(res =>{
+      console.log(res);
+      let r = res.data.data[0];
+      console.log(r);
+      edits.name = r.name;
+      edits.tour = r.tour;
+      edits.x = r.x;
+      edits.y = r.y;
+      edits.z = r.z;
+      edits.n = r.n;
+      edits.date = r.date.substring(0,10);
+      edits.position = r.position;
+      edits = edits;
+    })
   }
   
+  
   onMount(() => {
+    axios.post('/api/tours').then(x =>{
+      console.log(x.data);
+      tours = x.data.data;
+    })
     createScene(lon);
     month = '' + (now.getMonth() + 1),
         day = '' + now.getDate(),
@@ -67,7 +90,7 @@
         {#each tours as tour, i}
           <button class="tiles" on:click={handleTour}>
             {tour.name}
-            <img alt={tour.name} class=timg src={tour.img}/>
+            <img alt={tour.name} class=timg src={tour.name}/>
           </button>
         {/each}
       {/if}
@@ -98,14 +121,18 @@
               <input type=date bind:value={date}>
             </div>
 
-            <div class='inputs'>Edit Key
-              <input type=string bind:value={edits.key}>
+            <div class='inputs'>Position
+              <input type=string bind:value={edits.position}>
             </div>
             
           </div>
           <div class='ed-butts'>
             <button class="ed-butt" on:click={handleUpdate}>Update</button>
-            <button class="ed-butt" on:click={handleUpdate}>Get</button>
+            <div class='ed-butt'>
+              <div class='key'>API Key</div>
+              <input class='key' type=string bind:value={edits.key}>
+            </div>
+            <button class="ed-butt" on:click={getCurrent}>Get</button>
           </div>
         </div>
       {/if}

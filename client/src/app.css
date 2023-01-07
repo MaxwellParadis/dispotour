@@ -125,6 +125,7 @@ canvas {
 .ed-butt{
 	flex-basis: 1;
 	flex-grow: 1;
+	background-color: var(--baseColor);
 }
 
 .ed-butts{
@@ -132,6 +133,16 @@ canvas {
 	flex-grow: 1;
 	flex-shrink: 1;
 	justify-content: center;
+}
+
+.key{
+	width: 100%;
+	flex-grow: 1;
+	flex-shrink: 1;
+	height: 40%;
+	text-align: center;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
 }
 
 .tiles{
