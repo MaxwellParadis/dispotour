@@ -23,7 +23,10 @@
   }
 
   function handleTour(tour) {
-    tour.currentTarget.nextElementSibling.classList.toggle("close");
+    console.log(tour);
+    axios.post('/api/tour', {tour: tour}).then(res =>{
+      console.log(res);
+    })
   }
 
   function handleTab(mode) {
@@ -63,7 +66,7 @@
       console.log(x.data);
       tours = x.data.data;
     })
-    createScene(lon);
+    createScene(lon, );
     month = '' + (now.getMonth() + 1),
         day = '' + now.getDate(),
         year = now.getFullYear();
@@ -88,9 +91,9 @@
     <div class="base-bar">
       {#if !edit}
         {#each tours as tour, i}
-          <button class="tiles" on:click={handleTour}>
-            {tour.name}
-            <img alt={tour.name} class=timg src={tour.name}/>
+          <button class="tiles" on:click={()=>handleTour(tour.tour)}>
+            {tour.tour}
+            <img alt={tour.tour} class=timg src={tour.name}/>
           </button>
         {/each}
       {/if}

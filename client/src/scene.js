@@ -2,7 +2,7 @@ import * as BABYLON from 'babylonjs';
 
 const tourData = {};
 
-export const createScene = (canvas, project) => {
+export const createScene = (canvas, tour) => {
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
 
