@@ -50,7 +50,9 @@ server.post("/api/tours", (req, res) => {
 			console.log(err);
 			res.send({error: true, message: 'SQL Error', data: results});
 		}else{
-			res.send({error: false, message: 'Success', data: results});
+			//probably could do this with SQL - need to solve for that
+			let tours = [...new Map(results.map(item => [item['tour'], item])).values()];
+			res.send({error: false, message: 'Success', data: tours});
 		}	
     });
 }); //res.send(items);

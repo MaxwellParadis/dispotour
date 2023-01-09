@@ -17,7 +17,7 @@ export const createScene = (canvas, ptour) => {
   var ltour = tour.length;
   var utour = [...new Map(tour.map(item => [item['position'], item])).values()];
   var ultour = utour.length;
-  console.log(utour);
+  console.log(tour);
 
   var sphere = BABYLON.Mesh.CreateSphere('sky', 16, 2, scene);
   sphere.scaling.scaleInPlace(100);
@@ -38,18 +38,21 @@ export const createScene = (canvas, ptour) => {
 
   var active = utour.find(({position}) => position === tour[ltour-1].position);
   active.sprite.isVisible = false;
+  active.sprite.isPickable = false;
 
   scene.onPointerDown = function (evt) {
     var pickResult = scene.pickSprite(this.pointerX, this.pointerY);
     if (pickResult.hit) {
       active.sprite.isVisible = true;
+      active.sprite.isPickable = true;
       active = utour.find(({position}) => position === pickResult.pickedSprite.name);
       let iactive = tour.findIndex(x => x.name === active.name); 
       if(!('texture' in tour[iactive])){
-        tour[iactive].texture = new BABYLON.Texture(pickResult.pickedSprite.name, scene, undefined, false); 
+        tour[iactive].texture = new BABYLON.Texture(tour[iactive].name, scene, undefined, false); 
       } 
       mat.emissiveTexture = tour[iactive].texture;
       active.sprite.isVisible = false;
+      active.sprite.isPickable = false;
     }
   };
 
