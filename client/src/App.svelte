@@ -5,6 +5,8 @@
 
 	let lon;
   var date;
+  var scene;
+  var tour = [];
   var tours = [];
 	let now = new Date(), month, day, year;
 	const min = -10;
@@ -22,10 +24,11 @@
     };
   }
 
-  function handleTour(tour) {
-    console.log(tour);
-    axios.post('/api/tour', {tour: tour}).then(res =>{
-      console.log(res);
+  function handleTour(t) {
+    axios.post('/api/tour', {tour: t}).then(res =>{
+      tour = res.data.data;
+      scene.dispose();
+      scene = createScene(lon, tour);
     })
   }
 
@@ -55,18 +58,21 @@
       edits.z = r.z;
       edits.n = r.n;
       edits.date = r.date.substring(0,10);
+      date = edits.date;
       edits.position = r.position;
       edits = edits;
     })
   }
   
-  
   onMount(() => {
-    axios.post('/api/tours').then(x =>{
-      console.log(x.data);
-      tours = x.data.data;
+    axios.post('/api/tours').then(res =>{
+      console.log(res.data);
+      tours = res.data.data;
+      axios.post('/api/tour', {tour: 'Default'}).then(rest => {
+        tour = rest.data.data;
+        scene = createScene(lon, tour);
+      })
     })
-    createScene(lon, );
     month = '' + (now.getMonth() + 1),
         day = '' + now.getDate(),
         year = now.getFullYear();
