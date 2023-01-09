@@ -19,29 +19,31 @@ export const createScene = (canvas, ptour) => {
   var ultour = utour.length;
   console.log(utour);
 
-  var sphere = BABYLON.Mesh.CreateSphere('sky', 16, 2, scene);
-  sphere.scaling.scaleInPlace(100);
-  //sphere.setEnabled(false);
-
+  utour.forEach((t)=>{
+    t.sphere = BABYLON.Mesh.CreateSphere(t.position, 16, 2, scene);
+    //PRETTY SURE THIS WAS MY PROBLEM - mat WAS NOT CREATED YET - WILL REVISIT
+    t.sphere.material = mat;
+    t.sphere.scaling.scaleInPlace(100);
+    t.sphere.setEnabled(false);
+    t.sprite = new BABYLON.Sprite(t.position, spriteTour);
+    t.sprite.position = new BABYLON.Vector3(t.x, t.z, t.y);;
+    t.sprite.isPickable = true;
+  })
+  
   var mat = new BABYLON.StandardMaterial("360", scene);
   mat.disableLighting = true;
   mat.sideOrientation = 0;
   tour[ltour-1].texture = new BABYLON.Texture(tour[ltour-1].name, scene, undefined, false);
   mat.emissiveTexture = tour[ltour-1].texture;
-  sphere.material = mat;
-
-  utour.forEach((t)=>{
-    t.sprite = new BABYLON.Sprite(t.position, spriteTour);
-    t.sprite.position = new BABYLON.Vector3(t.x, t.z, t.y);;
-    t.sprite.isPickable = true;
-  })
-
   var active = utour.find(({position}) => position === tour[ltour-1].position);
+  active.sphere.setEnabled(true);
   active.sprite.isVisible = false;
+  
 
   scene.onPointerDown = function (evt) {
     var pickResult = scene.pickSprite(this.pointerX, this.pointerY);
     if (pickResult.hit) {
+      active.sphere.setEnabled(false);
       active.sprite.isVisible = true;
       active = utour.find(({position}) => position === pickResult.pickedSprite.name);
       let iactive = tour.findIndex(x => x.name === active.name); 
@@ -49,6 +51,7 @@ export const createScene = (canvas, ptour) => {
         tour[iactive].texture = new BABYLON.Texture(pickResult.pickedSprite.name, scene, undefined, false); 
       } 
       mat.emissiveTexture = tour[iactive].texture;
+      active.sphere.setEnabled(true);
       active.sprite.isVisible = false;
     }
   };
