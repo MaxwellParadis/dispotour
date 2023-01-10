@@ -9,8 +9,7 @@
   var tour = [];
   var tours = [];
 	let now = new Date(), month, day, year;
-	const min = -10;
-  const max = 10;
+  const max = 99;
   var edit = false;
   var edits = {name:'image.jpg', tour:'Default', date:'', position:'A', x:5, y:5, z:0, n:0, key:'APIKEY'};
 
@@ -19,9 +18,7 @@
   function vectorRange(n,r){
     if(n > r){return r;};
     if(n < -r){return -r};
-    if(r === 10){return Math.round(n*r)/r}else{
-      return Math.round(n);
-    };
+    return Math.round(n);
   }
 
   function handleTour(t) {
@@ -37,10 +34,10 @@
   }
 
   function handleUpdate() {
-    edits.x = vectorRange(edits.x,10); 
-    edits.y = vectorRange(edits.y,10); 
-    edits.z = vectorRange(edits.z,10); 
-    edits.n = vectorRange(edits.n,180); 
+    edits.x = vectorRange(edits.x, max); 
+    edits.y = vectorRange(edits.y, max); 
+    edits.z = vectorRange(edits.z, max); 
+    edits.n = vectorRange(edits.n, 180); 
     edits.date =  year+'-'+month+'-'+day;
     axios.post('/api/update', edits );
     edits = edits;
@@ -116,9 +113,9 @@
             
             <div class='inputs'>Vector
               <div class='ed-int-ar'>
-                <input class='ed-int' type=number min={min} max={max} bind:value={edits.x}>
-                <input class='ed-int' type=number min={min} max={max} bind:value={edits.y}>
-                <input class='ed-int' type=number min={min} max={max} bind:value={edits.z}>
+                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.x}>
+                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.y}>
+                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.z}>
               </div>
             </div>
             

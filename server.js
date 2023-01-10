@@ -31,7 +31,7 @@ var connection = mysql.createConnection({
 connection.connect(); 
 global.db = connection;
 
-let sql = "CREATE TABLE IF NOT EXISTS photos (name VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), date DATE, x DECIMAL(3,1), y DECIMAL(3,1), z DECIMAL(3,1), n INT, UNIQUE (name));";
+let sql = "CREATE TABLE IF NOT EXISTS photos (name VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), date DATE, x INT, y INT, z INT, n INT, UNIQUE (name));";
 db.query(sql, (err, results) => {
     if(err){console.log(err)};
     //console.log(results);
