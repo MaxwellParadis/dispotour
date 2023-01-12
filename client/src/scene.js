@@ -1,7 +1,7 @@
 import * as BABYLON from 'babylonjs';
-import { BabylonFileLoaderConfiguration } from 'babylonjs';
+//import { BabylonFileLoaderConfiguration } from 'babylonjs';
 
-export const createScene = (canvas, ptour) => {
+export const createScene = (canvas, ptour, rayprint) => {
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
 
@@ -41,7 +41,8 @@ export const createScene = (canvas, ptour) => {
   var active = utour.find(({position}) => position === tour[ltour-1].position);
   active.sprite.isVisible = false;
   active.sprite.isPickable = false;
-  sphere.rotate(new BABYLON.Vector3(0,1,0), active.n/ncon, BABYLON.Space.LOCAL);
+  sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
+  //sphere.rotate(new BABYLON.Vector3(0,1,0), (-active.n)/ncon, BABYLON.Space.LOCAL);
 
   scene.onPointerDown = function (evt) {
     var pickResult = scene.pickSprite(this.pointerX, this.pointerY);
@@ -54,14 +55,19 @@ export const createScene = (canvas, ptour) => {
         tour[iactive].texture = new BABYLON.Texture(tour[iactive].name, scene, undefined, false); 
       } 
       mat.emissiveTexture = tour[iactive].texture;
-      sphere.rotate(new BABYLON.Vector3(0,1,0), active.n/ncon, BABYLON.Space.LOCAL);
+      sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
+      console.log(active.n);
       active.sprite.isVisible = false;
       active.sprite.isPickable = false;
     }
     let ray = scene.createPickingRay(scene.pointerX, scene.pointerY, BABYLON.Matrix.Identity(), null);
     let hit = scene.pickWithRay(ray);
-    let pickedPoint = hit.pickedPoint;
-    console.log(pickedPoint);
+    let x = Math.round(hit.pickedPoint._x/3);
+    let z = Math.round(hit.pickedPoint._y/3);
+    let y = Math.round(hit.pickedPoint._z/3);
+    let i = active.name;
+    rayprint(x,y,z,i);
+    //console.log('x='+x+' y='+y+' z='+z);
   };
 
   engine.runRenderLoop(() => {

@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { createScene } from "./scene";
   import axios from "axios";
+    import { exclude_internal_props } from "svelte/internal";
 
 	let lon;
   var date;
@@ -12,8 +13,7 @@
   const max = 99;
   var edit = false;
   var edits = {name:'image.jpg', tour:'Default', date:'', position:'A', x:5, y:5, z:0, n:0, key:'APIKEY'};
-
-
+  var ray = {x:0,y:0,z:0};
 
   function vectorRange(n,r){
     if(n > r){return r;};
@@ -25,7 +25,7 @@
     axios.post('/api/tour', {tour: t}).then(res =>{
       tour = res.data.data;
       scene.dispose();
-      scene = createScene(lon, tour);
+      scene = createScene(lon, tour, rayprint);
     })
   }
 
@@ -37,7 +37,7 @@
     edits.x = vectorRange(edits.x, max); 
     edits.y = vectorRange(edits.y, max); 
     edits.z = vectorRange(edits.z, max); 
-    edits.n = vectorRange(edits.n, 180); 
+    edits.n = vectorRange(edits.n, 360); 
     edits.date =  year+'-'+month+'-'+day;
     axios.post('/api/update', edits );
     edits = edits;
@@ -60,6 +60,31 @@
       edits = edits;
     })
   }
+
+  function rayprint(nx,ny,nz,ni){
+    //console.log('rayprint');
+    ray.x = nx;
+    ray.y = ny;
+    ray.z = nz;
+    ray.n = ni;
+  }
+
+  function setRay(){
+    edits.x = ray.x;
+    edits.y = ray.y;
+    edits.z = ray.z;
+    edits=edits;
+  }
+
+  function setNorth(){
+    let firstAngle = Math.atan2(1, 0);
+    let secondAngle = Math.atan2(ray.y, ray.x);
+    let angle = secondAngle - firstAngle;
+    angle = angle * 180 / Math.PI;
+    console.log(angle);
+    edits.n = Math.round(angle);
+    edits = edits;
+  }
   
   onMount(() => {
     axios.post('/api/tours').then(res =>{
@@ -67,7 +92,7 @@
       tours = res.data.data;
       axios.post('/api/tour', {tour: 'Default'}).then(rest => {
         tour = rest.data.data;
-        scene = createScene(lon, tour);
+        scene = createScene(lon, tour, rayprint);
       })
     })
     month = '' + (now.getMonth() + 1),
@@ -84,8 +109,9 @@
 </script>
 
 <body>
-  <div class="head" />
+  <div class="head"/>
   <canvas bind:this={lon} />
+  <div class='coord'>Ray x:{ray.x} y:{ray.y} z:{ray.z} Photo:{ray.n}</div>
   <div class="base">
     <div class="base-butt">
       <button class="base-tab" on:click={()=>handleTab(false)}>Tours</button>
@@ -133,12 +159,14 @@
             
           </div>
           <div class='ed-butts'>
-            <button class="ed-butt" on:click={handleUpdate}>Update</button>
+            <button class="ed-butt" on:click={handleUpdate}>Update Image</button>
+            <button class="ed-butt" on:click={getCurrent}>Pull Image</button>
             <div class='ed-butt'>
               <div class='key'>API Key</div>
               <input class='key' type=string bind:value={edits.key}>
             </div>
-            <button class="ed-butt" on:click={getCurrent}>Get</button>
+            <button class="ed-butt" on:click={setRay}>Apply Ray</button>
+            <button class="ed-butt" on:click={setNorth}>Ray North</button>
           </div>
         </div>
       {/if}

@@ -41,6 +41,13 @@ canvas {
 	display: block;
 }
 
+.coord{
+	position: fixed;
+	width: 100%;
+	top: 0;
+	text-align: center;
+}
+
 .base{
 	color: var(--textColor);
 	position: fixed;
@@ -126,6 +133,8 @@ canvas {
 	flex-basis: 1;
 	flex-grow: 1;
 	background-color: var(--baseColor);
+	border-right: 2px solid black;
+	border-left: 2px solid black;
 }
 
 .ed-butts{
@@ -141,8 +150,6 @@ canvas {
 	flex-shrink: 1;
 	height: 40%;
 	text-align: center;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
 }
 
 .tiles{
