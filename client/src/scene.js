@@ -42,6 +42,7 @@ export const createScene = (canvas, ptour, rayprint) => {
   active.sprite.isVisible = false;
   active.sprite.isPickable = false;
   sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
+  rayprint(0,0,0,active.name);
   //sphere.rotate(new BABYLON.Vector3(0,1,0), (-active.n)/ncon, BABYLON.Space.LOCAL);
 
   scene.onPointerDown = function (evt) {

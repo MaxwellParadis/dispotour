@@ -67,7 +67,7 @@ canvas {
 .base-butt{
 	color: var(--textColor);
 	text-align: center;
-	width: 30vmax;
+	width: 40vmax;
 	height: 2vmax;
 	transform: translateY(-2vmax);
 	background-color:black;

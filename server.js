@@ -31,8 +31,14 @@ var connection = mysql.createConnection({
 connection.connect(); 
 global.db = connection;
 
-let sql = "CREATE TABLE IF NOT EXISTS photos (name VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), date DATE, x INT, y INT, z INT, n INT, UNIQUE (name));";
-db.query(sql, (err, results) => {
+let psql = "CREATE TABLE IF NOT EXISTS photos (name VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), date DATE, nx INT, ny INT, UNIQUE (name));";
+db.query(psql, (err, results) => {
+    if(err){console.log(err)};
+    //console.log(results);
+})
+
+let lsql = "CREATE TABLE IF NOT EXISTS links (id INT AUTO_INCREMENT, image VARCHAR(25), tour VARCHAR(25), position VARCHAR(2), x INT, y INT, z INT);";
+db.query(lsql, (err, results) => {
     if(err){console.log(err)};
     //console.log(results);
 })
@@ -72,7 +78,25 @@ server.post("/api/tour", (req, res) => {
 server.post("/api/update", (req, res) => {
 	let d = req.body;
 	if(d.key === KEY){
-		let sql = "REPLACE INTO photos (name, tour, date, position, x, y, z, n) VALUES('"+d.name+"','"+d.tour+"','"+d.date+"','"+d.position+"','"+d.x+"','"+d.y+"','"+d.z+"','"+d.n+"');";
+		let sql = "REPLACE INTO photos (name, tour, date, position, nx, ny) VALUES('"+d.name+"','"+d.tour+"','"+d.date+"','"+d.iposition+"','"+d.nx+"','"+d.ny+"');";
+    	db.query(sql, (err, results) => {
+        	if(err){
+				console.log(err);
+				res.send({error: true, message: 'SQL Error', data: results});
+			}else{
+				res.send({error: false, message: 'Success', data: results});
+			}			
+    	}); 
+	}else{
+		res.send({error: true, message:'Incorrect API Key'});
+	}
+});
+
+server.post("/api/edit", (req, res) => {
+	let d = req.body;
+	if(d.key === KEY){
+		//Need to figure out how best to do WHERE
+		let sql = "REPLACE INTO links (image, tour, position, x, y, z) VALUES('"+d.name+"','"+d.tour+"','"+d.vposition+"','"+d.x+"','"+d.y+"','"+d.z+"') WHERE id = '"+d.id+"';";
     	db.query(sql, (err, results) => {
         	if(err){
 				console.log(err);
