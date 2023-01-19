@@ -13,7 +13,7 @@
   var tours = [];
 	var now = new Date(), month, day, year;
   var edit = 'tour';
-  var edits = {name:'image.jpg', tour:'Default', date:'', iposition:'A', vposition:'A', x:5, y:5, z:0, nx:0, ny:0, key:'APIKEY'};
+  var edits = {aname: 'image.jpg', name:'image.jpg', tour:'Default', date:'', iposition:'A', lposition:'A', x:5, y:5, z:0, nx:0, ny:0, key:'APIKEY'};
   var ray = {x:0,y:0,z:0};
 
   function vectorRange(n,r){
@@ -25,6 +25,7 @@
   function handleTour(t) {
     axios.post('/api/tour', {tour: t}).then(res =>{
       tour = res.data.data;
+      console.log(tour);
       scene.dispose();
       scene = createScene(lon, tour, rayprint);
     })
@@ -53,14 +54,11 @@
       console.log(r);
       edits.name = r.name;
       edits.tour = r.tour;
-      edits.x = r.x;
-      edits.y = r.y;
-      edits.z = r.z;
       edits.nx = r.nx;
       edits.ny = r.ny;
       edits.date = r.date.substring(0,10);
       date = edits.date;
-      edits.position = r.position;
+      edits.iposition = r.iposition;
       edits = edits;
     })
   }
@@ -94,7 +92,7 @@
   
   onMount(() => {
     axios.post('/api/tours').then(res =>{
-      console.log(res.data);
+      //console.log(res.data);
       tours = res.data.data;
       axios.post('/api/tour', {tour: 'Default'}).then(rest => {
         tour = rest.data.data;
@@ -142,7 +140,7 @@
           <div class='edits'> 
             
             <div class='inputs'>Position
-              <input type=string bind:value={edits.vposition}>
+              <input type=string bind:value={edits.lposition}>
             </div>
 
             <div class='inputs'>Position Vector
@@ -155,7 +153,7 @@
           </div>
 
           <div class='ed-butts'>
-            <button class="ed-butt" on:click={()=>handleUpdate('update')}>Add or Update</button>
+            <button class="ed-butt" on:click={()=>handleUpdate('edit')}>Add or Update</button>
             <div class='ed-butt'>
               <div class='key'>API Key</div>
               <input class='key' type=string bind:value={edits.key}>
@@ -199,7 +197,7 @@
           
           <div class='ed-butts'>
             <div class='ed-butts'>
-              <button class="ed-butt" on:click={()=>handleUpdate('edit')}>Add or Update</button>
+              <button class="ed-butt" on:click={()=>handleUpdate('update')}>Add or Update</button>
               <button class="ed-butt" on:click={getCurrent}>Pull Image</button>
             </div>
             <div class='ed-butt'>
