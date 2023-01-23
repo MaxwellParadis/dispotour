@@ -37,7 +37,7 @@ db.query(isql, (err, results) => {
     //console.log(results);
 })
 
-let lsql = "CREATE TABLE IF NOT EXISTS links (lkey VARCHAR(32), tour VARCHAR(25), iposition VARCHAR(2), lposition VARCHAR(2), x TINYINT, y TINYINT,  z TINYINT, UNIQUE (lkey));";
+let lsql = "CREATE TABLE IF NOT EXISTS links (id INT AUTO_INCREMENT, tour VARCHAR(25), enable BOOL, iposition VARCHAR(2), lposition VARCHAR(2), x TINYINT, y TINYINT,  z TINYINT, PRIMARY KEY(id));";
 db.query(lsql, (err, results) => {
     if(err){console.log(err)};
     //console.log(results);
@@ -76,18 +76,7 @@ server.post("/api/tour", (req, res) => {
 			console.log(err);
 			res.send({error: true, message: 'SQL Error', data: results});
 		}else{
-			let sqll = "SELECT * FROM links WHERE tour = '"+req.body.tour+"';";
-			db.query(sqll, (err, links) =>{
-				if(err){
-					console.log(err);
-					res.send({error: true, message: 'SQL Error', data: links});
-				}else{
-					let data = {};
-					data.images = results;
-					data.links = links;
-					res.send({error: false, message: 'Success', data: data});
-				}
-			})
+			res.send({error: true, message: 'Success', data: results});
 		}	
     }); 
 });
@@ -101,6 +90,7 @@ server.post("/api/update", (req, res) => {
 				console.log(err);
 				res.send({error: true, message: 'SQL Error', data: results});
 			}else{
+				//let psql = "UPDATE links SET iposition = "
 				res.send({error: false, message: 'Success', data: results});
 			}			
     	}); 
@@ -109,19 +99,41 @@ server.post("/api/update", (req, res) => {
 	}
 });
 
+
+
+server.post("/api/links", (req, res) => {
+	//console.log('links');
+	let sql = "SELECT * FROM links WHERE tour = '"+req.body.tour+"' AND iposition = '"+req.body.iposition+"' AND NOT lposition = '"+req.body.iposition+"';";
+	db.query(sql, (err, results) =>{
+		if(err){
+			console.log(err);
+			res.send({error: true, message: 'SQL Error', data: results});
+		}else{
+			res.send({error: false, message: 'Success', data: results});
+		}
+	})
+});
+
 server.post("/api/edit", (req, res) => {
-	let d = req.body;
-	if (d.key === KEY) {
-		let lkey = d.tour+d.iposition+d.lposition;
-		let sql = "REPLACE INTO links (lkey, tour, iposition, lposition, x, y, z) VALUES('" + lkey + "','" + d.tour + "','" + d.iposition + "','" + d.lposition + "','" + d.x + "','" + d.y + "','" + d.z + "');";
-		db.query(sql, (err, results) => {
-			if (err) {
-				console.log(err);
-				res.send({ error: true, message: 'SQL Error', data: results });
-			} else {
-				res.send({ error: false, message: 'Success', data: results });
-			}
-		});
+	let b = req.body;
+	console.log(b.positions);
+	if (b.key === KEY) {
+		b.positions.forEach((d)=>{
+			//let lkey = d.tour+d.iposition+d.lposition;
+			let sql1 = "REPLACE INTO links (tour, iposition, lposition, x, y, z) VALUES('" + d.tour + "','" + d.iposition + "','" + d.lposition + "','" + d.x + "','" + d.y + "','" + d.z + "');";
+			let sql2 = "REPLACE INTO links (id, tour, iposition, lposition, x, y, z) VALUES('" + d.id + "','" + d.tour + "','" + d.iposition + "','" + d.lposition + "','" + d.x + "','" + d.y + "','" + d.z + "');";
+			let sql = 'new' in d ? sql1 : sql2;
+			db.query(sql, (err, results) => {
+				console.log(sql);
+				//if (err) {
+				//	console.log(err);
+				//	res.send({ error: true, message: 'SQL Error', data: results });
+				//} else {
+				//	res.send({ error: false, message: 'Success', data: results });
+				//}
+			});
+		})
+		res.send({ error: false, message: 'Success' });
 	}
 });
 

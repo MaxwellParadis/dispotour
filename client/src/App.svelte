@@ -9,12 +9,22 @@
 	var lon;
   var date;
   var scene;
-  var tour = [];
+  var now = new Date(), month, day, year;
+  var mode = 'tour';
+
+  var active = {};
   var tours = [];
-	var now = new Date(), month, day, year;
-  var edit = 'tour';
-  var edits = {aname: 'image.jpg', name:'image.jpg', tour:'Default', date:'', iposition:'A', lposition:'A', x:5, y:5, z:0, nx:0, ny:0, key:'APIKEY'};
+  var positions = [];
+  var ipos = [];
+  //var ipositions = [];
+  
+  var edits = {name:'image.jpg', tour:'Default', date:'', iposition:'A', nx:0, ny:0, key:'APIKEY'};
   var ray = {x:0,y:0,z:0};
+
+
+  function handleTab(m) {
+    mode = m;
+  }
 
   function vectorRange(n,r){
     if(n > r){return r;};
@@ -24,26 +34,31 @@
 
   function handleTour(t) {
     axios.post('/api/tour', {tour: t}).then(res =>{
-      tour = res.data.data;
-      console.log(tour);
-      scene.dispose();
-      scene = createScene(lon, tour, rayprint);
+      active = res.data.data;
+			ipos = [...new Set(active.map(item => item.iposition))];
+      //ipositions = [...new Map(active.map(item => [item['iposition'], item])).values()];
+      if(scene !== undefined){scene.dispose()};
+      scene = createScene(lon, active, rayprint, getLinks);
+      console.log(ipos);
     })
   }
 
-  function handleTab(mode) {
-    edit = mode;
-  }
-
-  function handleUpdate(mode) {
-    edits.x = vectorRange(edits.x, max); 
-    edits.y = vectorRange(edits.y, max); 
-    edits.z = vectorRange(edits.z, max); 
+  function handleUpdate() {
     edits.nx = vectorRange(edits.nx, max); 
     edits.ny = vectorRange(edits.ny, max); 
     edits.date =  year+'-'+month+'-'+day;
-    axios.post('/api/'+mode, edits );
+    axios.post('/api/update', edits);
     edits = edits;
+  }
+
+  function handleEdit(){
+    positions.forEach((t,i)=>{
+      positions[i].x = vectorRange(t.x, max); 
+      positions[i].y = vectorRange(t.y, max); 
+      positions[i].z = vectorRange(t.z, max);
+    })
+    positions = positions;
+    axios.post('/api/edit', {positions: positions, key: edits.key} );
   }
 
   function getCurrent() {
@@ -62,6 +77,22 @@
       edits = edits;
     })
   }
+   
+  async function getLinks(img){
+    let res = await axios.post('/api/links', {tour: img.tour, iposition: img.iposition});
+    positions = res.data.data;
+   
+    ipos.forEach((p,i)=>{
+      //console.log(!positions.some(x=> x.lposition === p));
+      if(!positions.some(x=> x.lposition === p )){
+        positions.push({new:true,tour:img.tour,iposition:img.iposition,lposition:p,x:48,y:48,z:48});
+      };
+    }) 
+
+    positions = positions;
+    return(positions);
+  }
+  //getLinks();
 
   function rayprint(nx,ny,nz,np){
     //console.log('rayprint');
@@ -71,11 +102,11 @@
     ray.p = np;
   }
 
-  function setRay(){
-    edits.x = ray.x;
-    edits.y = ray.y;
-    edits.z = ray.z;
-    edits=edits;
+  function setRay(i){
+    positions[i].x = ray.x;
+    positions[i].y = ray.y;
+    positions[i].z = ray.z;
+    positions = positions;
   }
 
   function setNorth(){
@@ -92,12 +123,8 @@
   
   onMount(() => {
     axios.post('/api/tours').then(res =>{
-      //console.log(res.data);
       tours = res.data.data;
-      axios.post('/api/tour', {tour: 'Default'}).then(rest => {
-        tour = rest.data.data;
-        scene = createScene(lon, tour, rayprint);
-      })
+      handleTour(tours[0].tour);
     })
     month = '' + (now.getMonth() + 1),
         day = '' + now.getDate(),
@@ -127,42 +154,38 @@
       <button class="base-tab" on:click={()=>handleTab('edit')}>Edit</button>
     </div>
     <div class="base-bar">
-      {#if edit === 'tour'}
-        {#each tours as tour, i}
-          <button class="tiles" on:click={()=>handleTour(tour.tour)}>
-            {tour.tour}
-            <img alt={tour.tour} class=timg src={tour.name}/>
+      {#if mode === 'tour'}
+        {#each tours as t, i}
+          <button class="tiles" on:click={()=>handleTour(t.tour)}>
+            {t.tour}
+            <img alt={t.tour} class=timg src={t.name}/>
           </button>
         {/each}
       {/if}
-      {#if edit === 'edit'}
+      {#if mode === 'edit'}
         <div class='edit-tab'>
-          <div class='edits'> 
-            
-            <div class='inputs'>Position
-              <input type=string bind:value={edits.lposition}>
-            </div>
-
-            <div class='inputs'>Position Vector
-              <div class='ed-int-ar'>
-                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.x}>
-                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.y}>
-                <input class='ed-int' type=number min={-max} max={max} bind:value={edits.z}>
+          <div class='edit-list'> 
+            {#each positions as l, i}
+              <div class='edit-item'>Position {positions[i].lposition} :
+                  <input class='ed-int' type=number min={-max} max={max} bind:value={positions[i].x}>
+                  <input class='ed-int' type=number min={-max} max={max} bind:value={positions[i].y}>
+                  <input class='ed-int' type=number min={-max} max={max} bind:value={positions[i].z}>
+                  <button class="ed-butt" on:click={()=>setRay(i)}>Use Ray Vector</button>
               </div>
-            </div>
+            {/each}
           </div>
 
           <div class='ed-butts'>
-            <button class="ed-butt" on:click={()=>handleUpdate('edit')}>Add or Update</button>
             <div class='ed-butt'>
               <div class='key'>API Key</div>
               <input class='key' type=string bind:value={edits.key}>
             </div>
-            <button class="ed-butt" on:click={setRay}>Use Ray Location</button>
+            <button class="ed-butt" on:click={handleEdit}>Update</button>
           </div>
+
         </div>
       {/if}
-      {#if edit === 'add'}
+      {#if mode === 'add'}
         <div class='edit-tab'>
           <div class='edits'>  
 
@@ -182,6 +205,7 @@
               <div class='ed-int-ar'>
                 <input class='ed-int' type=number min={-max} max={max} bind:value={edits.nx}>
                 <input class='ed-int' type=number min={-max} max={max} bind:value={edits.ny}>
+                <button class="ed-butt" on:click={setNorth}>Ray</button>
               </div>
             </div>
             
@@ -196,15 +220,14 @@
           </div>
           
           <div class='ed-butts'>
-            <div class='ed-butts'>
-              <button class="ed-butt" on:click={()=>handleUpdate('update')}>Add or Update</button>
-              <button class="ed-butt" on:click={getCurrent}>Pull Image</button>
-            </div>
+            
+            <button class="ed-butt" on:click={handleUpdate}>Add or Update</button>
             <div class='ed-butt'>
               <div class='key'>API Key</div>
               <input class='key' type=string bind:value={edits.key}>
             </div>
-            <button class="ed-butt" on:click={setNorth}>Use Ray North</button>
+            <button class="ed-butt" on:click={getCurrent}>Pull Image</button>
+            
           </div>
         </div>
       {/if}

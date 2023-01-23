@@ -108,6 +108,25 @@ canvas {
 	align-items: flex-start;
 }
 
+.edit-list{
+	/*overflow-x: scroll;*/
+	width: 100%;
+	height: calc(13vh);
+	display: flex;
+	flex-direction: column;
+	flex-wrap:wrap;
+	align-content: space-evenly;
+	align-items: flex-start;
+	overflow-y: scroll;
+}
+
+.edit-item{
+	display: flex;
+	padding: 1vh;
+	height: 2vmax;
+	align-items: center;
+}
+
 .inputs{
 	display: flex;
 	flex-direction: column;
