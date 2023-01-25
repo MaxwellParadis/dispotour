@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 //import { BabylonFileLoaderConfiguration } from 'babylonjs';
 
 export const createScene = (canvas, ptour, rayprint, getLinks) => {
+
   const engine = new BABYLON.Engine(canvas, true);
   const scene = new BABYLON.Scene(engine);
 
@@ -16,77 +17,63 @@ export const createScene = (canvas, ptour, rayprint, getLinks) => {
 
   //console.log(ptour);
   //const ncon = 57.324840764;
+  var active = {};
+  active.sprites = [];
+  var ia;
   var tour = ptour;
   var ltour = tour.length;
-  var utour = [...new Map(tour.map(item => [item['position'], item])).values()];
-  //var ultour = utour.length;
-  //console.log(utour);
+  //var utour = [...new Map(tour.map(item => [item['iposition'], item])).values()];
 
   var sphere = BABYLON.Mesh.CreateSphere('sky', 16, 2, scene);
   sphere.scaling.scaleInPlace(100);
-  //sphere.setEnabled(false);
 
   var mat = new BABYLON.StandardMaterial("360", scene);
   mat.disableLighting = true;
   mat.sideOrientation = 0;
-  //console.log(tour[ltour-1].name);
-  tour[ltour-1].texture = new BABYLON.Texture(tour[ltour-1].name, scene, undefined, false);
-  mat.emissiveTexture = tour[ltour-1].texture;
+
+  //console.log(tour);
+  updateScene(tour[ltour-1].iposition);
+
   sphere.material = mat;
 
-  //utour.forEach((t)=>{
-  //  t.sprite = new BABYLON.Sprite(t.position, spriteTour);
-  //  t.sprite.position = new BABYLON.Vector3(t.x, t.z, t.y);;
-  //  t.sprite.isPickable = true;
-  //})
-
-  var active = utour.find(({position}) => position === tour[ltour-1].position);
-  //active.links = ptour.links.filter(x=> x.iposition === active.iposition);
-  active.sprites = [];
+  async function updateScene(picked){
+    console.log(picked);
+    
   
-  async function handleLinks(){
+    if('name' in active){
+      ia = tour.findIndex(o => o.name === active.name);
+      if(active.sprites.length > 0){
+        active.sprites.forEach((s)=>{s.dispose});
+      };
+      if(!('texture' in tour[ia])){
+        tour[ia].texture = new BABYLON.Texture(tour[ia].name, scene, undefined, false); 
+      }
+    }
+
+    ia = tour.findIndex(o => o.iposition === picked);
+    //console.log(utour);
+    //active = utour.find(({iposition}) => iposition === picked);
+    active = tour[ia];
+    tour[ia].texture = new BABYLON.Texture(tour[ia].name, scene, undefined, false);
+    mat.emissiveTexture = tour[ia].texture;
+
+    console.log(active);
     active.links = await getLinks(active);
-    console.log(active.links);
+    active.sprites = [];
     active.links.forEach((s,i)=>{
       active.sprites[i] = new BABYLON.Sprite(s.lposition, spriteTour);
       active.sprites[i].position = new BABYLON.Vector3(s.x, s.z, s.y);
       active.sprites[i].isPickable = true;
     })
+    //sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
   }
-  handleLinks();
-  
-  //sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
+
   rayprint(0,0,0,active.name);
-  //sphere.rotate(new BABYLON.Vector3(0,1,0), (-active.n)/ncon, BABYLON.Space.LOCAL);
 
   scene.onPointerDown = function (evt) {
     var pickResult = scene.pickSprite(this.pointerX, this.pointerY);
     if (pickResult.hit) {
-      
-
-      //active.sprites.forEach((s)=>{
-      //  s.dispose;
-      //})
-
-      console.log(utour);
-      active = utour.find(({iposition}) => iposition === pickResult.pickedSprite.name);
-      console.log(active);
-
-      handleLinks();
-      
-
-      //active.sprite.isVisible = true;
-      //active.sprite.isPickable = true;
-      
-      let iactive = tour.findIndex(x => x.name === active.name); 
-      if(!('texture' in tour[iactive])){
-        tour[iactive].texture = new BABYLON.Texture(tour[iactive].name, scene, undefined, false); 
-      } 
-      mat.emissiveTexture = tour[iactive].texture;
-      //sphere.rotation = new BABYLON.Vector3(0,-active.n,0);
-      //console.log(active.n);
-      //active.sprite.isVisible = false;
-      //active.sprite.isPickable = false;
+      updateScene(pickResult.pickedSprite.name); 
     }
     let ray = scene.createPickingRay(scene.pointerX, scene.pointerY, BABYLON.Matrix.Identity(), null);
     let hit = scene.pickWithRay(ray);
@@ -95,7 +82,6 @@ export const createScene = (canvas, ptour, rayprint, getLinks) => {
     let y = Math.round(hit.pickedPoint._z/3);
     let i = active.name;
     rayprint(x,y,z,i);
-    //console.log('x='+x+' y='+y+' z='+z);
   };
 
   engine.runRenderLoop(() => {

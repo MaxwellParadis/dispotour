@@ -39,7 +39,7 @@
       //ipositions = [...new Map(active.map(item => [item['iposition'], item])).values()];
       if(scene !== undefined){scene.dispose()};
       scene = createScene(lon, active, rayprint, getLinks);
-      console.log(ipos);
+      //console.log(ipos);
     })
   }
 
@@ -81,10 +81,10 @@
   async function getLinks(img){
     let res = await axios.post('/api/links', {tour: img.tour, iposition: img.iposition});
     positions = res.data.data;
-   
+    console.log(positions);
     ipos.forEach((p,i)=>{
-      //console.log(!positions.some(x=> x.lposition === p));
-      if(!positions.some(x=> x.lposition === p )){
+      console.log(p);
+      if(!positions.some(x=> x.iposition === p )){
         positions.push({new:true,tour:img.tour,iposition:img.iposition,lposition:p,x:48,y:48,z:48});
       };
     }) 
