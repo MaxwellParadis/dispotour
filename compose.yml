@@ -8,13 +8,13 @@ services:
     working_dir: /app
     restart: always
     environment:
-      - PORT=3014
-      - SQL_PORT=3314
-      - SQL_USR=sqluser
-      - SQL_PW=YourPassword
-      - SQL_DB=DB
+      - PORT=$PORT
+      - SQL_PORT=$SQL_PORT
+      - SQL_USR=$SQL_USR
+      - SQL_PW=$SQL_PW
+      - SQL_DB=$SQL_DB
       - SQL_HST=TMysql
-      - KEY=APIKEY
+      - KEY=$KEY
     ports:
       - $PORT:$PORT
     volumes:
