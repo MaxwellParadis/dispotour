@@ -81,14 +81,19 @@
   async function getLinks(img){
     let res = await axios.post('/api/links', {tour: img.tour, iposition: img.iposition});
     positions = res.data.data;
-    console.log(positions);
-    ipos.forEach((p,i)=>{
-      console.log(p);
-      if(!positions.some(x=> x.iposition === p )){
-        positions.push({new:true,tour:img.tour,iposition:img.iposition,lposition:p,x:48,y:48,z:48});
+    //console.log(ipos);
+    let aipos = ipos.filter(p => p !== img.iposition);
+    //console.log(aipos);
+    let remove = positions.filter(obj => !aipos.includes(obj.lposition));
+    //console.log(remove);
+    
+    aipos.forEach((p,i)=>{
+      console.log(positions.some(x=> x.iposition === p ));
+      if(!positions.some(x=> x.iposition !== p )){
+        positions.push({new:true,tour:img.tour,iposition:img.iposition,lposition:p,x:0,y:0,z:48});
       };
     }) 
-
+    
     positions = positions;
     return(positions);
   }
@@ -124,7 +129,7 @@
   onMount(() => {
     axios.post('/api/tours').then(res =>{
       tours = res.data.data;
-      handleTour(tours[0].tour);
+      if(tours.length > 0){handleTour(tours[0].tour)};
     })
     month = '' + (now.getMonth() + 1),
         day = '' + now.getDate(),

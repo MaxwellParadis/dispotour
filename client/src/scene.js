@@ -43,7 +43,8 @@ export const createScene = (canvas, ptour, rayprint, getLinks) => {
     if('name' in active){
       ia = tour.findIndex(o => o.name === active.name);
       if(active.sprites.length > 0){
-        active.sprites.forEach((s)=>{s.dispose});
+        //console.log(active);
+        active.sprites.forEach((s)=>{s.dispose()});
       };
       if(!('texture' in tour[ia])){
         tour[ia].texture = new BABYLON.Texture(tour[ia].name, scene, undefined, false); 
