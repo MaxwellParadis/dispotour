@@ -17,9 +17,10 @@ This has been an enjoyable Svelte and Babylon experiment.  The goal was to produ
 - API updates require API key you define for docker for simple security.
 
 **TODO:**
+- Ability to Remove Image.
+- Date Selection for each position/location
 - Vite dev access server via proxy?  Could not solve this - does not work with svelte like it has with React.
 - UI Improvements
-- Date Selection for each position/location
 - North Rotation adjustment is not currently working
 - Function to automaticaly clean up orphaned link rows in database - app already identifies them.
 - Built in photo uploads?
