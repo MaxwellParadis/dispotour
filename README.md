@@ -19,9 +19,16 @@ This has been an enjoyable Svelte and Babylon experiment.  The goal was to produ
 **TODO:**
 - Ability to Remove Image.
 - Date Selection for each position/location
-- Vite dev access server via proxy?  Could not solve this - does not work with svelte like it has with React.
-- UI Improvements
+- UI Improvements, Possibly longer wait before close animation
 - North Rotation adjustment is not currently working
 - Function to automaticaly clean up orphaned link rows in database - app already identifies them.
 - Built in photo uploads?
 - User access and Authentication for select tours?
+- More Feedback on button press - Indicate bad API key or update tour/photo-location in response to updates.
+
+**ISSUES**
+- Vite dev access server via proxy?  Could not solve this - does not work with svelte like it has with React.
+- You might need to restart the node server container after compose up - this is probably something stupid I will look into soon...Depends_on?
+- On PC you can fly around in the 3D space with arrow keys. this is not really intended but not really concerned
+- Have had it crash on me once while hovering the ui as the scene loaded.
+
