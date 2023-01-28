@@ -1,8 +1,26 @@
-This is a Svelte and BabylonJS Excersise I took on for fun.  Revisited an old 360 Photo tour APP I built with three.js a few years ago.  I have a much more complete concept for this new evolution of that idea now.
+[Example Site Here](https://demo.dispositionstudio.com/)
 
-The plan is for an exposed docker volume to be made available so that photos may be uploaded via SFTP or another method - users choice.
-From there the edit tab will allow you to add or modify rows in that database and if your img column can be associated with an image in that folder it will load.
+This has been an enjoyable Svelte and Babylon experiment.  The goal was to produce a 360 Photo tour app that was a bit more functional than one I had built with three.js a few years ago.  It is at a point where it is ready to use and quickly/easily deployable using Docker-compose.
 
-Will hope to have it all working in a few weeks from writting.
+STEPS TO DEPLOY:
+1. Clone Repo or copy the docker compose.yml file
+2. Configure your .env file CHANGE API KEY FROM DEFAULT
+3. Run docker-compose up -d
+4. Go to your site and start adding images.
+5. Report back with any issues!
 
-One issue I have had though is with a dev server proxy solution with svelte.  I have tried a few options and landed on vite for now just because it is fast and does not generate extra ssr stuff I do not need like sveltekit - also allows me to build where I would like.
+CURRENT FUNCTIONALITY:
+-Use UI to add/update a row in the database for an image uploaded to the photos volume
+-Click screen to get Coordinates
+-Use UI to apply ray coordinates to variable so they may be updated into the database.
+-Create and navigate as many different tours as you would like.
+-API updates require API key you define for docker for simple security.
+
+TODO:
+-Vite dev access server via proxy?  Could not solve this - does not work with svelte like it has with React.
+-UI Improvements
+-Date Selection for each position/location
+-North Rotation adjustment is not currently working
+-Function to automaticaly clean up orphaned link rows in database - app already identifies them.
+-Built in photo uploads?
+-User access and Authentication for select tours?
