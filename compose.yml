@@ -1,7 +1,7 @@
 version: "3.9"  
 services:
   Server:
-    container_name: Landing
+    container_name: TOUR-Server
     image: maxwellmichael/disposition:TOUR-Latest
     depends_on:
       - TMysql

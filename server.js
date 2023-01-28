@@ -1,10 +1,10 @@
 var express = require('express');
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 var mysql = require('mysql2');
 
 var server = express();
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({extended:true}));
+//server.use(bodyParser.json());
+//server.use(bodyParser.urlencoded({extended:true}));
 server.use(express.json());
 
 server.use(express.static('client/dist'));
@@ -124,7 +124,7 @@ server.post("/api/edit", (req, res) => {
 			let sql2 = "REPLACE INTO links (id, tour, iposition, lposition, x, y, z) VALUES('" + d.id + "','" + d.tour + "','" + d.iposition + "','" + d.lposition + "','" + d.x + "','" + d.y + "','" + d.z + "');";
 			let sql = 'new' in d ? sql1 : sql2;
 			db.query(sql, (err, results) => {
-				console.log(sql);
+				//console.log(sql);
 				//if (err) {
 				//	console.log(err);
 				//	res.send({ error: true, message: 'SQL Error', data: results });
@@ -153,19 +153,3 @@ server.post("/api/get", (req, res) => {
 server.listen(PORT, () => {
 	console.log('Server Running on '+PORT);
 });
-
-/*
-
-
-function getTours(){
-     
-}
-
-function getTour(){
-    
-}
-
-function getPhoto(){
-    
-}
-*/
